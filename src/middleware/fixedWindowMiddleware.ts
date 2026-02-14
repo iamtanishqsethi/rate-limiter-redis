@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { attempt, type FixedWindowConfig } from "../components/fixedWindows.ts";
+import {type FixedWindowConfig, attempt } from "../components/fixedWindows.ts";
 
 const DEFAULT_CONFIG: FixedWindowConfig = {
   maxRequest: 10,

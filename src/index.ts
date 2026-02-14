@@ -1,15 +1,17 @@
 import express from "express";
 import dotenv from "dotenv";
-import { fixedWindowMiddleware } from "./middleware/fixedWindowMiddleware.ts";
+import { fixedWindowMiddleware } from "./middleware/fixedWindowMiddleware.ts"
+import { SlidingWindowCounterMiddleWare } from "./middleware/slidingWindowCounterMiddleware.ts";
 
 dotenv.config();
 const app = express();
 
 // Apply fixed-window rate limit: 10 requests per 10 seconds per IP (default)
-app.use(fixedWindowMiddleware());
+// app.use(fixedWindowMiddleware());
+app.use(SlidingWindowCounterMiddleWare())
 
 // Or with custom config and options:
-// app.use(fixedWindowMiddleware({
+// app.use(configMiddleware({
 //   config: { maxRequest: 5, windowSeconds: 60 },
 //   keyPrefix: "api",
 //   getIdentifier: (req) => req.headers["x-api-key"] as string ?? req.ip ?? "anon",

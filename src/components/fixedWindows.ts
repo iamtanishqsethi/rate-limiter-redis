@@ -1,11 +1,5 @@
 import getClient from "../redis.ts";
-
-export interface RateLimitResult{
-    allowed:boolean
-    remaining:number
-    limit:number
-    retryAfter:number|null
-}
+import { type RateLimitResult } from "../types/index.ts";
 
 export interface FixedWindowConfig{
     maxRequest:number

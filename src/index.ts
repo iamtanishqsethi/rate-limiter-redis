@@ -1,26 +1,28 @@
 import express from "express";
-import dotenv from 'dotenv';
-import { client } from './redis.ts';
-import { rateLimiter } from "./rateLimiter.ts";
+import dotenv from "dotenv";
+import { fixedWindowMiddleware } from "./middleware/fixedWindowMiddleware.ts";
 
 dotenv.config();
-const app = express()
+const app = express();
 
-app.use(rateLimiter(100,60))//100 request per 60 sec
+// Apply fixed-window rate limit: 10 requests per 10 seconds per IP (default)
+app.use(fixedWindowMiddleware());
 
-app.get('/',(req,res)=>{
-    res.send("Wellcome! you are within the rate limit")
+// Or with custom config and options:
+// app.use(fixedWindowMiddleware({
+//   config: { maxRequest: 5, windowSeconds: 60 },
+//   keyPrefix: "api",
+//   getIdentifier: (req) => req.headers["x-api-key"] as string ?? req.ip ?? "anon",
+// }));
+
+app.get("/", (req, res) => {
+    res.send("Welcome! You are within the rate limit.");
 })
 
 
-client.on('error', err => console.log('Redis Client Error', err));
-
-client.connect().then(()=>{
-    console.log("Connected to redis")
-    app.listen(8000, () => {
-        console.log("Server is running on port 8000");
-    });
-}).catch(()=>console.log("Error connecting to database"))
+app.listen(8000, () => {
+    console.log("Server is running on port 8000");
+});
 
 
 
